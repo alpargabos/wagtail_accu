@@ -9,19 +9,16 @@ import cucumber.api.java.en.When;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.util.Scanner;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class AuthenticationStepdefs {
 
     private String username;
     private Wagtail wagtail;
     private TwitterSimulator simulator = new TwitterSimulator();
-    private Reader input = mock(Reader.class);
-    private PrintWriter writer;
+    private Scanner input;
     private OutputStream output;
 
 
@@ -40,7 +37,6 @@ public class AuthenticationStepdefs {
                 return content.toString();
             }
         };
-        writer = new PrintWriter(output);
     }
 
     @After
@@ -56,8 +52,8 @@ public class AuthenticationStepdefs {
     @When("^I grant access to my account for Wagtail$")
     public void I_grant_access_to_my_account_for_Wagtail() throws Throwable {
         MockWebServer server = simulator.getServerForLogin(username);
+        input = new Scanner("1234567");
         initWagtail(server);
-        when(input.getUserInput()).thenReturn("1234567");
         wagtail.login();
     }
 
@@ -69,8 +65,8 @@ public class AuthenticationStepdefs {
     @When("^I don't grant access to my account for Wagtail$")
     public void I_don_t_grant_access_to_my_account_for_Wagtail() throws Throwable {
         MockWebServer server = simulator.getServerForInvalidLogin();
+        input = new Scanner("1234567");
         initWagtail(server);
-        when(input.getUserInput()).thenReturn("1234567");
         wagtail.login();
     }
 
@@ -82,7 +78,7 @@ public class AuthenticationStepdefs {
     private void initWagtail(MockWebServer server) {
         wagtail = new Wagtail(server.getUrl("/twitter/"));
         wagtail.setInput(input);
-        wagtail.setOutput(writer);
+        wagtail.setOutput(output);
     }
 
 }

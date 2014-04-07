@@ -8,8 +8,10 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Scanner;
 
 public class Wagtail {
     private static final String CONSUMER_KEY = "q9Vhuh8DwgnIG99ULDcS3g";
@@ -52,11 +54,11 @@ public class Wagtail {
 
     }
 
-    protected void setOutput(PrintWriter output) {
+    protected void setOutput(OutputStream output) {
         ui.setOutput(output);
     }
 
-    protected void setInput(Reader input) {
+    protected void setInput(Scanner input) {
         ui.setInput(input);
     }
 

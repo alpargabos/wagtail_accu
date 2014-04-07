@@ -1,10 +1,12 @@
 package com.alpargabos.wagtail;
 
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class Ui {
     PrintWriter printer = new PrintWriter(System.out);
-    Reader reader  = new Reader();
+    Scanner reader  = new Scanner(System.in);
 
     public String acquirePinCodeFor(String requestUrl) {
         printer.println("Open the following URL and grant access to your account:");
@@ -13,7 +15,7 @@ public class Ui {
         do{
             printer.println("Enter the PIN and hit enter.[PIN]:");
             printer.flush();
-            pin = reader.getUserInput();
+            pin = reader.nextLine();
         } while(pin.length() != 7);
         return pin;
     }
@@ -28,11 +30,11 @@ public class Ui {
         printer.flush();
     }
 
-    public void setOutput(PrintWriter output) {
-        printer = output;
+    public void setOutput(OutputStream output) {
+        printer = new PrintWriter(output);
     }
 
-    public void setInput(Reader input) {
+    public void setInput(Scanner input) {
         reader = input;
     }
 }

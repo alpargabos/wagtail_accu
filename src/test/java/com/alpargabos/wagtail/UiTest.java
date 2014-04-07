@@ -3,49 +3,60 @@ package com.alpargabos.wagtail;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Scanner;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.*;
 
 public class UiTest {
     Ui ui = new Ui();
-    Reader reader = mock(Reader.class);
-    PrintWriter printer = mock(PrintWriter.class);
+    Scanner input;
+    OutputStream output;
 
 
     @Before
     public void setUp() throws Exception {
         ui = new Ui();
-        ui.setInput(reader);
-        ui.setOutput(printer);
+        output = new OutputStream() {
+            StringBuilder content = new StringBuilder();
+            @Override
+            public void write(int i) throws IOException {
+                content.append((char) i);
+            }
+            public String toString() {
+                return content.toString();
+            }
+        };
+        ui.setOutput(output);
     }
 
     @Test
     public void acquirePinCodePrintsTheRequestUrlAndReturnsThePinCode() throws Exception {
         //given
-        when(reader.getUserInput()).thenReturn("1234567");
+        input = new Scanner("1234567");
+        ui.setInput(input);
         //when
         String pin = ui.acquirePinCodeFor("auth_url");
         //then
-        verify(printer).println("Open the following URL and grant access to your account:");
-        verify(printer).println("auth_url");
-        verify(printer).println("Enter the PIN and hit enter.[PIN]:");
-        verify(reader).getUserInput();
+        assertTrue(output.toString().contains("Open the following URL and grant access to your account:"));
+        assertTrue(output.toString().contains("auth_url"));
+        assertTrue(output.toString().contains("Enter the PIN and hit enter.[PIN]:"));
         assertEquals(pin, "1234567");
     }
 
     @Test
     public void acquirePinCodeUntilAPinCodeWithValidLengthProvided() throws Exception {
         //given
-        when(reader.getUserInput()).thenReturn("123").thenReturn("1234567");
+        input = new Scanner("123\n1234567\n");
+        ui.setInput(input);
         //when
         String pin = ui.acquirePinCodeFor("auth_url");
         //then
         assertThat(pin, is("1234567"));
-        verify(reader, times(2)).getUserInput();
     }
 
     @Test
@@ -53,7 +64,7 @@ public class UiTest {
         //when
         ui.welcomeUser("Alpar");
         //then
-        verify(printer).println(contains("Alpar"));
+        assertTrue(output.toString().contains("Alpar"));
     }
 
     @Test
@@ -61,6 +72,6 @@ public class UiTest {
         //when
         ui.warnUser("no no");
         //then
-        verify(printer).println(contains("WARNING: no no"));
+        assertTrue(output.toString().contains("WARNING: no no"));
     }
 }
