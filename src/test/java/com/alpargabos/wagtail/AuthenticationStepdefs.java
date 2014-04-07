@@ -51,9 +51,7 @@ public class AuthenticationStepdefs {
 
     @When("^I grant access to my account for Wagtail$")
     public void I_grant_access_to_my_account_for_Wagtail() throws Throwable {
-        MockWebServer server = simulator.getServerForLogin(username);
-        input = createInputStreamFrom("1234567");
-        initWagtail(server);
+        initWagtail(simulator.getServerForLogin(username));
         wagtail.login();
     }
 
@@ -68,9 +66,7 @@ public class AuthenticationStepdefs {
 
     @When("^I don't grant access to my account for Wagtail$")
     public void I_don_t_grant_access_to_my_account_for_Wagtail() throws Throwable {
-        MockWebServer server = simulator.getServerForInvalidLogin();
-        input = createInputStreamFrom("1234567");
-        initWagtail(server);
+        initWagtail(simulator.getServerForInvalidLogin());
         wagtail.login();
     }
 
@@ -81,6 +77,7 @@ public class AuthenticationStepdefs {
 
     private void initWagtail(MockWebServer server) {
         wagtail = new Wagtail(server.getUrl("/twitter/"));
+        input = createInputStreamFrom("1234567");
         wagtail.setInput(input);
         wagtail.setOutput(output);
     }
