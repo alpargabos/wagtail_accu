@@ -12,6 +12,7 @@ public class Ui {
         String pin= "";
         do{
             printer.println("Enter the PIN and hit enter.[PIN]:");
+            printer.flush();
             pin = reader.getUserInput();
         } while(pin.length() != 7);
         return pin;
@@ -19,10 +20,12 @@ public class Ui {
 
     public void welcomeUser(String username) {
         printer.println("You are logged in as: " + username);
+        printer.flush();
     }
 
     public void warnUser(String text) {
         printer.println("WARNING: " + text);
+        printer.flush();
     }
 
     public void setOutput(PrintWriter output) {
