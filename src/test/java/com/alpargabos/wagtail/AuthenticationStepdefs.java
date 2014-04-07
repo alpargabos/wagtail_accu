@@ -19,11 +19,11 @@ public class AuthenticationStepdefs{
     private String username;
     private Wagtail wagtail;
     private TwitterSimulator simulator = new TwitterSimulator();
-    private Scanner input = mock(Scanner.class);
+    private Reader input = mock(Reader.class);
     private PrintWriter writer = mock(PrintWriter.class);
 
     @Before
-    public void beforeScenario(){
+    public void setUp(){
 
     }
 
