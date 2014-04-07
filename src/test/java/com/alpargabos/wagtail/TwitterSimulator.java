@@ -51,4 +51,108 @@ public class TwitterSimulator {
                 new MockResponse().setBody("Not authorized!").setResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED)
         );
     }
+
+    public MockWebServer getServerForStatusUpdate(String tweet) {
+        return createServerWithResponses(
+                new MockResponse().setBody(getRequestToken()),
+                new MockResponse().setBody(getAuthToken()),
+                new MockResponse().setBody(getLoginJsonWithUsername("wagtailbirdapp")),
+                new MockResponse().setBody(getStatusUpdate(tweet))
+        );
+    }
+
+    private String getStatusUpdate(String tweet) {
+        return "{\n" +
+                "    \"created_at\": \"Sat Apr 05 01:30:59 +0000 2014\",\n" +
+                "    \"id\": 452257058373767200,\n" +
+                "    \"id_str\": \"452257058373767168\",\n" +
+                "    \"text\": \""+tweet+"\",\n" +
+                "    \"source\": \"\",\n" +
+                "    \"truncated\": false,\n" +
+                "    \"in_reply_to_status_id\": null,\n" +
+                "    \"in_reply_to_status_id_str\": null,\n" +
+                "    \"in_reply_to_user_id\": null,\n" +
+                "    \"in_reply_to_user_id_str\": null,\n" +
+                "    \"in_reply_to_screen_name\": null,\n" +
+                "    \"user\": {\n" +
+                "        \"id\": 2405056022,\n" +
+                "        \"id_str\": \"2405056022\",\n" +
+                "        \"name\": \"Wagtail\",\n" +
+                "        \"screen_name\": \"wagtailbirdapp\",\n" +
+                "        \"location\": \"\",\n" +
+                "        \"description\": \"wagtail, twitter console app, great, useful, made with BDD\",\n" +
+                "        \"url\": null,\n" +
+                "        \"entities\": {\n" +
+                "            \"description\": {\n" +
+                "                \"urls\": []\n" +
+                "            }\n" +
+                "        },\n" +
+                "        \"protected\": false,\n" +
+                "        \"followers_count\": 0,\n" +
+                "        \"friends_count\": 16,\n" +
+                "        \"listed_count\": 0,\n" +
+                "        \"created_at\": \"Sat Mar 22 21:18:59 +0000 2014\",\n" +
+                "        \"favourites_count\": 0,\n" +
+                "        \"utc_offset\": 7200,\n" +
+                "        \"time_zone\": \"Amsterdam\",\n" +
+                "        \"geo_enabled\": false,\n" +
+                "        \"verified\": false,\n" +
+                "        \"statuses_count\": 2,\n" +
+                "        \"lang\": \"en\",\n" +
+                "        \"contributors_enabled\": false,\n" +
+                "        \"is_translator\": false,\n" +
+                "        \"is_translation_enabled\": false,\n" +
+                "        \"profile_background_color\": \"C0DEED\",\n" +
+                "        \"profile_background_image_url\": \"http://abs.twimg.com/images/themes/theme1/bg.png\",\n" +
+                "        \"profile_background_image_url_https\": \"https://abs.twimg.com/images/themes/theme1/bg.png\",\n" +
+                "        \"profile_background_tile\": false,\n" +
+                "        \"profile_image_url\": \"http://pbs.twimg.com/profile_images/447485222125199360/_T9H7blD_normal.jpeg\",\n" +
+                "        \"profile_image_url_https\": \"https://pbs.twimg.com/profile_images/447485222125199360/_T9H7blD_normal.jpeg\",\n" +
+                "        \"profile_link_color\": \"0084B4\",\n" +
+                "        \"profile_sidebar_border_color\": \"C0DEED\",\n" +
+                "        \"profile_sidebar_fill_color\": \"DDEEF6\",\n" +
+                "        \"profile_text_color\": \"333333\",\n" +
+                "        \"profile_use_background_image\": true,\n" +
+                "        \"default_profile\": true,\n" +
+                "        \"default_profile_image\": false,\n" +
+                "        \"following\": false,\n" +
+                "        \"follow_request_sent\": false,\n" +
+                "        \"notifications\": false\n" +
+                "    },\n" +
+                "    \"geo\": null,\n" +
+                "    \"coordinates\": null,\n" +
+                "    \"place\": null,\n" +
+                "    \"contributors\": null,\n" +
+                "    \"retweet_count\": 0,\n" +
+                "    \"favorite_count\": 0,\n" +
+                "    \"entities\": {\n" +
+                "        \"hashtags\": [\n" +
+                "            {\n" +
+                "                \"text\": \"apitools\",\n" +
+                "                \"indices\": [\n" +
+                "                    87,\n" +
+                "                    96\n" +
+                "                ]\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"symbols\": [],\n" +
+                "        \"urls\": [],\n" +
+                "        \"user_mentions\": [\n" +
+                "            {\n" +
+                "                \"screen_name\": \"Apigee\",\n" +
+                "                \"name\": \"Apigee\",\n" +
+                "                \"id\": 26094126,\n" +
+                "                \"id_str\": \"26094126\",\n" +
+                "                \"indices\": [\n" +
+                "                    13,\n" +
+                "                    20\n" +
+                "                ]\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    },\n" +
+                "    \"favorited\": false,\n" +
+                "    \"retweeted\": false,\n" +
+                "    \"lang\": \"en\"\n" +
+                "}";
+    }
 }

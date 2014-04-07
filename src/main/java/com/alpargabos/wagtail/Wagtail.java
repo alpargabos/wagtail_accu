@@ -68,4 +68,8 @@ public class Wagtail {
     protected void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }
+
+    public void writeStatus() {
+
+    }
 }
