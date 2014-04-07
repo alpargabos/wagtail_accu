@@ -8,7 +8,6 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 import java.io.PrintWriter;
-import java.util.Scanner;
 
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
@@ -39,9 +38,8 @@ public class AuthenticationStepdefs{
 
     @When("^I grant access to my account for Wagtail$")
     public void I_grant_access_to_my_account_for_Wagtail() throws Throwable {
-        wagtail = new Wagtail();
         MockWebServer server = simulator.getServerForLogin(username);
-        wagtail.setUrl(server.getUrl("/twitter/"));
+        wagtail = new Wagtail(server.getUrl("/twitter/"));
         wagtail.setInput(input);
         wagtail.setOutput(writer);
         wagtail.login();

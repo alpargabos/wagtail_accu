@@ -1,15 +1,48 @@
 package com.alpargabos.wagtail;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
 import java.io.PrintWriter;
 import java.net.URL;
 
 public class Wagtail {
-    public void login() {
+    private static final String CONSUMER_KEY = "q9Vhuh8DwgnIG99ULDcS3g";
+    private static final String CONSUMER_SECRET = "1evGkZGOympVOmoHDvQLxkbnWCU5PgrBU8oFrTAZw";
+    private Twitter twitter;
+    private ConfigurationBuilder cb = new ConfigurationBuilder();
+    private Ui ui = new Ui();
 
+    public Wagtail(){
+        Configuration conf = cb.setDebugEnabled(true)
+                .setOAuthConsumerKey(CONSUMER_KEY)
+                .setOAuthConsumerSecret(CONSUMER_SECRET)
+                .build();
+        twitter = new TwitterFactory(conf).getInstance();
     }
 
-    public void setUrl(URL url) {
+    public Wagtail(URL url) {
+        cb.setRestBaseURL(url.toString());
+        cb.setOAuthRequestTokenURL(url.toString());
+        cb.setOAuthAccessTokenURL(url.toString());
+        Configuration conf = cb.setDebugEnabled(true)
+                .setOAuthConsumerKey(CONSUMER_KEY)
+                .setOAuthConsumerSecret(CONSUMER_SECRET)
+                .build();
+        twitter = new TwitterFactory(conf).getInstance();
+    }
 
+    public void login() throws TwitterException {
+        RequestToken requestToken = twitter.getOAuthRequestToken();
+        String pin = ui.acquirePinCodeFor(requestToken.getAuthorizationURL());
+        AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
+        twitter.setOAuthAccessToken(accessToken);
+        ui.welcomeUser(twitter.getScreenName());
     }
 
     protected void setOutput(PrintWriter output) {
@@ -18,5 +51,13 @@ public class Wagtail {
 
     protected void setInput(Reader input) {
 
+    }
+
+    protected void setUI(Ui ui) {
+        this.ui = ui;
+    }
+
+    protected void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
     }
 }
