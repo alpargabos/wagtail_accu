@@ -46,3 +46,7 @@ jar {
         attributes 'Implementation-Title': 'Wagtail - Java twitter console application', 'Implementation-Version': version
     }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
