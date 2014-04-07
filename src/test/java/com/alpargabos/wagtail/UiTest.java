@@ -30,9 +30,9 @@ public class UiTest {
         //when
         String pin = ui.acquirePinCodeFor("auth_url");
         //then
-        verify(printer).write("Open the following URL and grant access to your account:\n");
-        verify(printer).write("auth_url\n");
-        verify(printer).write("Enter the PIN and hit enter.[PIN]:\n");
+        verify(printer).println("Open the following URL and grant access to your account:");
+        verify(printer).println("auth_url");
+        verify(printer).println("Enter the PIN and hit enter.[PIN]:");
         verify(reader).getUserInput();
         assertEquals(pin, "1234567");
     }
@@ -46,5 +46,13 @@ public class UiTest {
         //then
         assertThat(pin, is("1234567"));
         verify(reader, times(2)).getUserInput();
+    }
+
+    @Test
+    public void welcomeUserWelcomesTheUserWithTheProvidedName() throws Exception {
+        //when
+        ui.welcomeUser("Alpar");
+        //then
+        verify(printer).println(contains("Alpar"));
     }
 }
