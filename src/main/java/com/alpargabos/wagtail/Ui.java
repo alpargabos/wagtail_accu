@@ -1,5 +1,6 @@
 package com.alpargabos.wagtail;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -34,7 +35,7 @@ public class Ui {
         printer = new PrintWriter(output);
     }
 
-    public void setInput(Scanner input) {
-        reader = input;
+    public void setInput(InputStream input) {
+        reader = new Scanner(input);
     }
 }

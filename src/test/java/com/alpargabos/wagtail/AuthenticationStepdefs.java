@@ -7,9 +7,10 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Scanner;
 
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +19,7 @@ public class AuthenticationStepdefs {
     private String username;
     private Wagtail wagtail;
     private TwitterSimulator simulator = new TwitterSimulator();
-    private Scanner input;
+    private InputStream input;
     private OutputStream output;
 
 
@@ -32,7 +33,6 @@ public class AuthenticationStepdefs {
                 System.out.print((char) i);
                 content.append((char) i);
             }
-
             public String toString() {
                 return content.toString();
             }
@@ -52,9 +52,13 @@ public class AuthenticationStepdefs {
     @When("^I grant access to my account for Wagtail$")
     public void I_grant_access_to_my_account_for_Wagtail() throws Throwable {
         MockWebServer server = simulator.getServerForLogin(username);
-        input = new Scanner("1234567");
+        input = createInputStreamFrom("1234567");
         initWagtail(server);
         wagtail.login();
+    }
+
+    private InputStream createInputStreamFrom(String s) {
+        return new ByteArrayInputStream(s.getBytes());
     }
 
     @Then("^I will be greeted on my full name$")
@@ -65,7 +69,7 @@ public class AuthenticationStepdefs {
     @When("^I don't grant access to my account for Wagtail$")
     public void I_don_t_grant_access_to_my_account_for_Wagtail() throws Throwable {
         MockWebServer server = simulator.getServerForInvalidLogin();
-        input = new Scanner("1234567");
+        input = createInputStreamFrom("1234567");
         initWagtail(server);
         wagtail.login();
     }

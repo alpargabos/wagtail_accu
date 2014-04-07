@@ -3,9 +3,10 @@ package com.alpargabos.wagtail;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Scanner;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -14,7 +15,6 @@ import static org.hamcrest.core.Is.is;
 
 public class UiTest {
     Ui ui = new Ui();
-    Scanner input;
     OutputStream output;
 
 
@@ -37,8 +37,7 @@ public class UiTest {
     @Test
     public void acquirePinCodePrintsTheRequestUrlAndReturnsThePinCode() throws Exception {
         //given
-        input = new Scanner("1234567");
-        ui.setInput(input);
+        ui.setInput(createInputStreamFrom("1234567"));
         //when
         String pin = ui.acquirePinCodeFor("auth_url");
         //then
@@ -51,12 +50,15 @@ public class UiTest {
     @Test
     public void acquirePinCodeUntilAPinCodeWithValidLengthProvided() throws Exception {
         //given
-        input = new Scanner("123\n1234567\n");
-        ui.setInput(input);
+        ui.setInput(createInputStreamFrom("123\n1234567\n"));
         //when
         String pin = ui.acquirePinCodeFor("auth_url");
         //then
         assertThat(pin, is("1234567"));
+    }
+
+    private InputStream createInputStreamFrom(String s) {
+        return new ByteArrayInputStream(s.getBytes());
     }
 
     @Test
