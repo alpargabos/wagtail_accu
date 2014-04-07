@@ -22,7 +22,7 @@ public class Ui {
     }
 
     public void warnUser(String text) {
-
+        printer.println("WARNING: " + text);
     }
 
     public void setOutput(PrintWriter output) {

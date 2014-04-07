@@ -55,4 +55,12 @@ public class UiTest {
         //then
         verify(printer).println(contains("Alpar"));
     }
+
+    @Test
+    public void warnUserAddsWarningToTheTextProvided() throws Exception {
+        //when
+        ui.warnUser("no no");
+        //then
+        verify(printer).println(contains("WARNING: no no"));
+    }
 }
