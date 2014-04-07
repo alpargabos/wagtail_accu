@@ -4,17 +4,23 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class TwitterSimulator {
 
-    public TwitterSimulator() {
+    public MockWebServer getServerForLogin(String username) {
+        return createServerWithResponses(
+                new MockResponse().setBody(getRequestToken()),
+                new MockResponse().setBody(getAuthToken()),
+                new MockResponse().setBody(getLoginJsonWithUsername(username))
+        );
     }
 
-    public MockWebServer getServerForLogin(String username) {
+    private MockWebServer createServerWithResponses(MockResponse... responses){
         MockWebServer server = new MockWebServer();
-        server.enqueue(new MockResponse().setBody(getRequestToken()));
-        server.enqueue(new MockResponse().setBody(getAuthToken()));
-        server.enqueue(new MockResponse().setBody(getLoginJsonWithUsername(username)));
+        for(MockResponse resp: responses) {
+            server.enqueue(resp);
+        }
         try {
             server.play();
         } catch (IOException e) {
@@ -38,4 +44,11 @@ public class TwitterSimulator {
                 "oauth_callback_confirmed=true";
     }
 
+
+    public MockWebServer getServerForInvalidLogin() {
+        return createServerWithResponses(
+                new MockResponse().setBody(getRequestToken()),
+                new MockResponse().setBody("Not authorized!").setResponseCode(HttpURLConnection.HTTP_UNAUTHORIZED)
+        );
+    }
 }

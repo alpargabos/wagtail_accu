@@ -56,17 +56,33 @@ public class AuthenticationStepdefs {
     @When("^I grant access to my account for Wagtail$")
     public void I_grant_access_to_my_account_for_Wagtail() throws Throwable {
         MockWebServer server = simulator.getServerForLogin(username);
-        wagtail = new Wagtail(server.getUrl("/twitter/"));
-        wagtail.setInput(input);
-        wagtail.setOutput(writer);
-
+        initWagtail(server);
         when(input.getUserInput()).thenReturn("1234567");
         wagtail.login();
     }
 
     @Then("^I will be greeted on my full name$")
     public void I_will_be_greeted_on_my_full_name() throws Throwable {
-        assertTrue(output.toString(),output.toString().contains("You are logged in as: " + username));
+        assertTrue(output.toString().contains("You are logged in as: " + username));
+    }
+
+    @When("^I don't grant access to my account for Wagtail$")
+    public void I_don_t_grant_access_to_my_account_for_Wagtail() throws Throwable {
+        MockWebServer server = simulator.getServerForInvalidLogin();
+        initWagtail(server);
+        when(input.getUserInput()).thenReturn("1234567");
+        wagtail.login();
+    }
+
+    @Then("^I will be notified about the unsuccessful login$")
+    public void I_will_be_notified_about_the_unsuccessful_login() throws Throwable {
+        assertTrue(output.toString().contains("pin code is not valid"));
+    }
+
+    private void initWagtail(MockWebServer server) {
+        wagtail = new Wagtail(server.getUrl("/twitter/"));
+        wagtail.setInput(input);
+        wagtail.setOutput(writer);
     }
 
 }

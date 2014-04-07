@@ -3,6 +3,7 @@ package com.alpargabos.wagtail;
 import org.junit.Before;
 import org.junit.Test;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -34,4 +35,16 @@ public class WagtailTest{
         verify(ui).welcomeUser(anyString());
     }
 
+
+    @Test
+    public void warnUserInCaseOfAFakePinCode() throws Exception {
+        //given
+        when(twitter.getOAuthRequestToken()).thenReturn(new RequestToken("",""));
+        when(ui.acquirePinCodeFor(anyString())).thenReturn("123");
+        when(twitter.getOAuthAccessToken(any(RequestToken.class), anyString())).thenThrow(new TwitterException("",null, 401));
+        //when
+        wagtail.login();
+        //then
+        verify(ui).warnUser(anyString());
+    }
 }

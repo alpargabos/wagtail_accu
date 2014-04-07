@@ -18,7 +18,7 @@ public class Wagtail {
     private ConfigurationBuilder cb = new ConfigurationBuilder();
     private Ui ui = new Ui();
 
-    public Wagtail(){
+    public Wagtail() {
         Configuration conf = cb.setDebugEnabled(true)
                 .setOAuthConsumerKey(CONSUMER_KEY)
                 .setOAuthConsumerSecret(CONSUMER_SECRET)
@@ -40,17 +40,24 @@ public class Wagtail {
     public void login() throws TwitterException {
         RequestToken requestToken = twitter.getOAuthRequestToken();
         String pin = ui.acquirePinCodeFor(requestToken.getAuthorizationURL());
-        AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-        twitter.setOAuthAccessToken(accessToken);
-        ui.welcomeUser(twitter.getScreenName());
+        try {
+            AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, pin);
+            twitter.setOAuthAccessToken(accessToken);
+            ui.welcomeUser(twitter.getScreenName());
+        } catch (TwitterException ex) {
+            if (401 == ex.getStatusCode()) {
+                ui.warnUser("The provided pin code is not valid!");
+            }
+        }
+
     }
 
     protected void setOutput(PrintWriter output) {
-
+        ui.setOutput(output);
     }
 
     protected void setInput(Reader input) {
-
+        ui.setInput(input);
     }
 
     protected void setUI(Ui ui) {
