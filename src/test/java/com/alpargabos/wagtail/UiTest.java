@@ -2,6 +2,8 @@ package com.alpargabos.wagtail;
 
 import org.junit.Before;
 import org.junit.Test;
+import twitter4j.Status;
+import twitter4j.User;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,6 +14,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UiTest {
     Ui ui = new Ui();
@@ -76,4 +80,43 @@ public class UiTest {
         //then
         assertTrue(output.toString().contains("WARNING: no no"));
     }
+
+    @Test
+    public void acquireNewStatusReturnsTheProvidedText() throws Exception {
+        //given
+        ui.setInput(createInputStreamFrom("This is a short tweet"));
+        //when
+        String tweet = ui.acquireNewStatus();
+        //then
+        assertTrue(output.toString(), output.toString().contains("Please write your tweet(in max. 140 characters):"));
+        assertEquals(tweet, "This is a short tweet");
+    }
+
+    @Test
+    public void acquireNewStatusUntilAValidLengthStatusProvided() throws Exception {
+        //given
+        ui.setInput(createInputStreamFrom("This is a tooooooooooo long tweeet. Longer than 140 characters. Really...............................................................................\n" +
+                "This is a short tweet!"));
+        //when
+        String tweet = ui.acquireNewStatus();
+        //then
+        assertTrue(output.toString(), output.toString().contains("Please write your tweet(in max. 140 characters):"));
+        assertEquals(tweet, "This is a short tweet!");
+    }
+
+    @Test
+    public void showStatusPrintsIdUserNameText() throws Exception {
+        //given
+        Status status = mock(Status.class);
+        when(status.getId()).thenReturn(123L);
+        when(status.getText()).thenReturn("I am on ACCU! #FTW");
+        User user  = mock(User.class);
+        when(user.getScreenName()).thenReturn("Alpar");
+        when(status.getUser()).thenReturn(user);
+        //when
+        ui.showStatus(status);
+        //then
+        assertTrue(output.toString(), output.toString().contains("id:123 Alpar:I am on ACCU! #FTW"));
+    }
+
 }

@@ -52,16 +52,16 @@ public class TwitterSimulator {
         );
     }
 
-    public MockWebServer getServerForStatusUpdate(String tweet) {
+    public MockWebServer getServerForStatusUpdate(String username, String tweet) {
         return createServerWithResponses(
                 new MockResponse().setBody(getRequestToken()),
                 new MockResponse().setBody(getAuthToken()),
-                new MockResponse().setBody(getLoginJsonWithUsername("wagtailbirdapp")),
-                new MockResponse().setBody(getStatusUpdate(tweet))
+                new MockResponse().setBody(getLoginJsonWithUsername(username)),
+                new MockResponse().setBody(getStatusUpdate(username, tweet))
         );
     }
 
-    private String getStatusUpdate(String tweet) {
+    private String getStatusUpdate(String username, String tweet) {
         return "{\n" +
                 "    \"created_at\": \"Sat Apr 05 01:30:59 +0000 2014\",\n" +
                 "    \"id\": 452257058373767200,\n" +
@@ -77,8 +77,8 @@ public class TwitterSimulator {
                 "    \"user\": {\n" +
                 "        \"id\": 2405056022,\n" +
                 "        \"id_str\": \"2405056022\",\n" +
-                "        \"name\": \"Wagtail\",\n" +
-                "        \"screen_name\": \"wagtailbirdapp\",\n" +
+                "        \"name\": \""+username+"\",\n" +
+                "        \"screen_name\": \""+username+"\",\n" +
                 "        \"location\": \"\",\n" +
                 "        \"description\": \"wagtail, twitter console app, great, useful, made with BDD\",\n" +
                 "        \"url\": null,\n" +

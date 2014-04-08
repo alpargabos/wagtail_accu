@@ -1,5 +1,6 @@
 package com.alpargabos.wagtail;
 
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -50,7 +51,12 @@ public class Wagtail {
                 ui.warnUser("The provided pin code is not valid!");
             }
         }
+    }
 
+    public void writeStatus() throws TwitterException {
+        String text = ui.acquireNewStatus();
+        Status status = twitter.updateStatus(text);
+        ui.showStatus(status);
     }
 
     protected void setOutput(OutputStream output) {
@@ -69,7 +75,4 @@ public class Wagtail {
         this.twitter = twitter;
     }
 
-    public void writeStatus() {
-
-    }
 }
